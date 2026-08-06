@@ -3,7 +3,6 @@ const http = require('http');
 const express = require('express');
 const cors = require('cors');
 const { Server } = require('socket.io');
-
 const authRoutes = require('./routes/auth');
 const clientRoutes = require('./routes/clients');
 const forfaitRoutes = require('./routes/forfaits');
@@ -24,6 +23,9 @@ const io = new Server(server, {
   }
 });
 
+// Rendre l'instance io accessible aux contrôleurs REST via req.app.get('io')
+app.set('io', io);
+
 // Middlewares globaux
 app.use(cors());
 app.use(express.json());
@@ -35,7 +37,7 @@ app.use('/api/clients', clientRoutes);
 app.use('/api/forfaits', forfaitRoutes);
 app.use('/api/factures', factureRoutes);
 app.use('/api/stats', statsRoutes);
-app.use('/api/tickets', ticketRoutes); 
+app.use('/api/tickets', ticketRoutes);
 
 // Healthcheck complet (Version combinée)
 app.get('/api/health', (req, res) => {
