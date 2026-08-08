@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sénégal Connect · Support</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- ÉCRAN DE CONNEXION -->
+<div id="ecran-login">
+  <div class="carte-login">
+    <h1>Sénégal Connect</h1>
+    <p class="sous-titre">Console support client — connexion</p>
+    <div class="champ">
+      <label for="login-email">Email</label>
+      <input type="email" id="login-email" placeholder="client@test.sn" autocomplete="username">
+    </div>
+    <div class="champ">
+      <label for="login-mdp">Mot de passe</label>
+      <input type="password" id="login-mdp" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn btn-brand" id="btn-login">Se connecter</button>
+    <div class="erreur-login" id="erreur-login"></div>
+  </div>
+</div>
+
+<!-- APPLICATION -->
+<div id="app">
+  <div class="sidebar">
+    <div class="marque">
+      <div class="marque-ligne">
+        <h1>Sénégal Connect</h1>
+        <button class="btn-deconnexion" id="btn-deconnexion">Quitter</button>
+      </div>
+      <span class="role-badge" id="badge-role">—</span>
+    </div>
+
+    <div class="bloc-creation" id="bloc-creation-ticket" style="display:none;">
+      <input type="text" id="nouveau-sujet" placeholder="Sujet du ticket (ex: Facture incorrecte)">
+      <button class="btn btn-accent btn-sm" id="btn-creer-ticket" style="width:100%;">+ Ouvrir un ticket</button>
+    </div>
+
+    <div class="liste-tickets" id="liste-tickets">
+      <div class="vide">Chargement des tickets…</div>
+    </div>
+  </div>
+
+  <div class="panneau">
+    <div id="zone-vide-panneau" class="zone-vide">
+      <div class="icone-vide">💬</div>
+      <div>Sélectionnez un ticket pour démarrer la conversation</div>
+    </div>
+
+    <div id="fil-actif" style="display:none; flex-direction:column; height:100%;">
+      <div class="fil-header">
+        <div class="pastille-ligne" id="pastille-connexion"></div>
+        <div>
+          <h2 id="fil-sujet">—</h2>
+          <div class="sous" id="fil-sous">—</div>
+        </div>
+        <div class="fil-header-actions" id="fil-actions"></div>
+      </div>
+
+      <div class="zone-messages" id="zone-messages"></div>
+      <div class="indicateur-frappe" id="indicateur-frappe"></div>
+
+      <div class="composer">
+        <div class="composer-ligne">
+          <button class="btn-icon" id="btn-emoji" title="Émojis">😊</button>
+          <button class="btn-icon" id="btn-fichier" title="Joindre un fichier">📎</button>
+          <input type="file" id="input-fichier" class="input-fichier-cache" accept=".jpg,.jpeg,.png,.pdf,.mp3,.wav,.ogg">
+          <input type="text" id="input-message" placeholder="Écrivez votre message…" autocomplete="off">
+          <button class="btn-icon" id="btn-appel-audio" title="Appel audio">📞</button>
+          <button class="btn-icon" id="btn-appel-video" title="Appel vidéo">🎥</button>
+          <button class="btn btn-brand" id="btn-envoyer" style="width:auto; padding:12px 22px;">Envoyer</button>
+        </div>
+        <div class="panneau-emoji" id="panneau-emoji"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST APPEL ENTRANT -->
+<div class="toast-appel-entrant" id="toast-appel-entrant">
+  <h3 id="toast-appel-titre">Appel entrant</h3>
+  <p id="toast-appel-sous">—</p>
+  <div class="toast-actions">
+    <button class="btn btn-danger btn-sm" id="btn-refuser-appel">Refuser</button>
+    <button class="btn btn-accent btn-sm" id="btn-accepter-appel">Accepter</button>
+  </div>
+</div>
+
+<!-- OVERLAY APPEL ACTIF -->
+<div class="overlay-appel" id="overlay-appel">
+  <div class="zone-video">
+    <div class="badge-partage" id="badge-partage">🖥️ Partage d'écran actif</div>
+    <div class="indicateur-distant" id="indicateur-distant">
+      <span class="pastille-etat" id="etat-micro-distant">🔇 Micro coupé</span>
+      <span class="pastille-etat" id="etat-video-distant">📷 Caméra coupée</span>
+    </div>
+    <video class="video-distante" id="video-distante" autoplay playsinline></video>
+    <video class="video-locale" id="video-locale" autoplay playsinline muted></video>
+  </div>
+  <div class="chrono-appel" id="chrono-appel">00:00</div>
+  <div class="controles-appel">
+    <button class="btn-icon actif" id="btn-toggle-micro" title="Couper le micro">🎙️</button>
+    <button class="btn-icon actif" id="btn-toggle-camera" title="Couper la caméra">🎥</button>
+    <button class="btn-icon" id="btn-toggle-partage" title="Partager l'écran">🖥️</button>
+    <button class="btn-icon coupe" id="btn-raccrocher" title="Raccrocher">📵</button>
+  </div>
+</div>
+
+<div class="toast-notif" id="toast-notif"></div>
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="js/webrtc.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

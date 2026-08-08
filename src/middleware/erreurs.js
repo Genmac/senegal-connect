@@ -1,4 +1,5 @@
 // src/middleware/erreurs.js
+const multer = require('multer');
 
 // Formatage de la réponse de pagination
 exports.paginer = (queryResult, page, limite, total) => {
@@ -25,13 +26,24 @@ exports.gestionnaireErreurs = (err, req, res, next) => {
       detail: err.detail,
     });
   }
-
   // Violation de clé étrangère
   if (err.code === '23503') {
     return res.status(422).json({
       erreur: 'Opération impossible : référence introuvable (clé étrangère).',
       detail: err.detail,
     });
+  }
+  // Erreurs Multer (fichier trop volumineux, etc.)
+  if (err instanceof multer.MulterError) {
+    return res.status(422).json({
+      erreur: err.code === 'LIMIT_FILE_SIZE'
+        ? 'Fichier trop volumineux (10 Mo maximum).'
+        : `Erreur d'upload : ${err.message}`,
+    });
+  }
+  // Type de fichier rejeté par le fileFilter de multer
+  if (err.message && err.message.includes('Type de fichier non autorisé')) {
+    return res.status(422).json({ erreur: err.message });
   }
 
   return res.status(500).json({

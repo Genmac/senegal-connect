@@ -1,6 +1,7 @@
 -- docs/schema.sql
 
 -- Nettoyage des anciennes tables si elles existent
+DROP TABLE IF EXISTS reactions CASCADE;
 DROP TABLE IF EXISTS appels CASCADE;
 DROP TABLE IF EXISTS messages_statut CASCADE;
 DROP TABLE IF EXISTS messages CASCADE;
@@ -55,7 +56,7 @@ CREATE TABLE factures (
     id SERIAL PRIMARY KEY,
     client_id INT NOT NULL REFERENCES clients(id) ON DELETE RESTRICT,
     reference VARCHAR(50) UNIQUE NOT NULL,
-    periode VARCHAR(7) NOT NULL, -- Format YYYY-MM
+    periode VARCHAR(7) NOT NULL,
     montant_fcfa NUMERIC(10, 2) NOT NULL CHECK (montant_fcfa >= 0),
     statut VARCHAR(20) DEFAULT 'impayee' CHECK (statut IN ('payee', 'impayee', 'en_retard')),
     date_emission TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -123,9 +124,19 @@ CREATE TABLE appels (
 CREATE INDEX idx_appels_ticket_id ON appels(ticket_id);
 CREATE INDEX idx_appels_statut ON appels(statut);
 
+-- 9. Table Reactions (Émojis sur les messages)
+CREATE TABLE reactions (
+    message_id INT NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
+    utilisateur_id INT NOT NULL REFERENCES utilisateurs(id) ON DELETE CASCADE,
+    emoji VARCHAR(10) NOT NULL,
+    ajoute_le TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (message_id, utilisateur_id, emoji)
+);
+
+CREATE INDEX idx_reactions_message ON reactions(message_id);
+
 -- --- DONNÉES DE TEST INITIALES ---
 
--- Insertion de 4 Forfaits
 INSERT INTO forfaits (nom, quota_data_go, quota_voix_min, prix_mensuel_fcfa) VALUES
 ('Pass Jeune', 5, 60, 2500.00),
 ('Kouloucom', 15, 300, 7500.00),
